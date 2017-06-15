@@ -1,5 +1,8 @@
 # Additional methods provided by pry-rescue.
 class << Pry
+
+  EXCLUDED = %w(RSpec::Expectations::ExpectationNotMetError)
+
   # Start a pry session on any unhandled exceptions within this block.
   #
   # @example
@@ -33,6 +36,7 @@ class << Pry
   #   end
   #
   def rescued(e=$!)
+    return if EXCLUDED.include? e.class.to_s
     if e.instance_variable_defined?(:@rescue_bindings)
       PryRescue.enter_exception_context(e)
     else
